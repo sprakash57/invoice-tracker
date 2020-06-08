@@ -1,8 +1,19 @@
-version: 2.1
+jobs:
+  deploy:
+    executor: heroku/default
+    steps:
+      - checkout
+      - heroku/install
+      - run:
+          command: >
+            echo "The command above installs Heroku, the command below deploys.
+            What you do inbetween is up to you!"
+      - heroku/deploy-via-git
+
 orbs:
   node: circleci/heroku@1.0.1
-
+version: 2.1
 workflows:
     heroku_deploy:
       jobs:
-        - heroku/deploy-via-git
+        - deploy
