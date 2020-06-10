@@ -1,8 +1,9 @@
 
 ## XT-news
-[![CircleCI](https://circleci.com/gh/Zaccc123/awesome-cicd-react.svg?style=svg)](https://circleci.com/gh/sprakash57/xt-news) 
+[![CircleCI](https://circleci.com/gh/Zaccc123/awesome-cicd-react.svg?style=svg)](https://circleci.com/gh/sprakash57/xt-news)
+
 XT-news is a clone of Hacker News.  You can check the original website [here](https://news.ycombinator.com/)
-This app is bootstraped with create-react-app and deployed on Heroku with CircleCI pipeline. Know more in Features section. Live application can be fuond over [here]([https://xt-news.herokuapp.com/](https://xt-news.herokuapp.com/))
+This app is bootstraped with create-react-app and deployed on Heroku with CircleCI pipeline. Know more in Features section. Live application can be fuond over [here]([https://xt-news.herokuapp.com/](https://xt-news.herokuapp.com/])
 
 ## 📑 Available scripts
 
