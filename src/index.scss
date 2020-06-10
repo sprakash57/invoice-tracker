@@ -10,8 +10,67 @@ body {
 .arrow-up {
   width: 0; 
   height: 0; 
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid black;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-bottom: 0.5rem solid black;
   cursor: pointer;
+}
+
+.table-container {
+  border-bottom: 5px solid tomato;
+}
+
+.table-header {
+  background: tomato;
+  font-size: 12px;
+  color: white
+}
+
+tr > td,th{
+  vertical-align: inherit !important;
+}
+
+section > span,a {
+  font-size: 0.8rem;
+  color: grey;
+}
+.story {
+  font-size: 1rem;
+  font-weight: bolder;
+  color: black;
+}
+
+.url{
+  font-size: 0.8rem;
+  a {
+    text-decoration: none;
+    color: grey;
+  }
+}
+
+@mixin text-bold {
+  font-weight: 800;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.author {
+  @include text-bold;
+}
+
+.hide{
+  cursor: pointer;
+  @include text-bold;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-bottom: 1rem;
+  &>span {
+    font-size: 1.5rem;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
 }
