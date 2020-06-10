@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { fetchStories, storeVotes } from '../store/actions/index';
 import DesktopLayout from './DesktopLayout';
 
-const App = ({ fetchStories, storeVotes, state }) => {
+const App = ({ fetchStories, storeVotes }) => {
   const [page, setPage] = useState(1);
 
   const handleNavigation = navigation => () => {
@@ -34,10 +34,6 @@ const App = ({ fetchStories, storeVotes, state }) => {
   )
 }
 
-const mapState = state => ({
-  state: state.storyReducer
-})
-
 const mapDispatch = dispatch => bindActionCreators({ fetchStories, storeVotes }, dispatch)
 
-export default connect(mapState, mapDispatch)(App);
+export default connect(null, mapDispatch)(App);
