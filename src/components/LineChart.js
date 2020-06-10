@@ -23,7 +23,6 @@ const LineChart = ({ state }) => {
     };
     const options = {
         maintainAspectRatio: false,
-        aspectRatio: 0,
         scales: {
             yAxes: [{
                 scaleLabel: {
@@ -47,7 +46,7 @@ const LineChart = ({ state }) => {
 
     useEffect(() => {
         const chart = document.querySelector('canvas');
-        chart.parentNode.style.height = '256px';
+        chart.parentNode.style.height = '300px';
     }, [])
 
     return (

@@ -42,7 +42,7 @@ const DesktopLayout = ({ storeVotes, state }) => {
                 <span className='url'> (<a href={url} target="_blank" rel='noreferrer noopener'>{url}</a>) </span>
                 <span>by</span>
                 <span className='author'>{author}</span>
-                <span className='time mr-2'>{time}</span>
+                <span className='mr-2'>{time}</span>
                 [<span onClick={hideNews(index)} className='hide'>hide</span>]
             </section>
         )
