@@ -7,18 +7,44 @@ import { z } from 'zod';
 
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(['pending', 'paid']),
+  customerId: z.string({ invalid_type_error: 'Please select a customer' }),
+  amount: z.coerce.number().gt(0, 'Please enter a amount greater than $0'),
+  status: z.enum(['pending', 'paid'], {
+    invalid_type_error: 'Please select an invoice status',
+  }),
   date: z.string(),
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-export const createInvoice = async (formData: FormData) => {
-  const rawFormData = Object.fromEntries(formData.entries());
-  const { customerId, amount, status } = CreateInvoice.parse(rawFormData);
+export type FormState = {
+  message?: string | null;
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+};
+
+export const createInvoice = async (
+  prevState: FormState,
+  formData: FormData,
+) => {
+  const validatedFields = CreateInvoice.safeParse({
+    customerId: formData.get('customerId'),
+    status: formData.get('status'),
+    amount: formData.get('amount'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create invoice',
+    };
+  }
+
+  const { customerId, status, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   const currentDate = new Date().toISOString().split('T')[0];
 
@@ -28,16 +54,32 @@ export const createInvoice = async (formData: FormData) => {
         VALUES (${customerId}, ${amountInCents}, ${status}, ${currentDate})
   `;
   } catch (error) {
-    return { message: 'DB Error: Failed to create invoice' };
+    return { message: 'DB Error: Failed to Create invoice' };
   }
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 };
 
-export const updateInvoice = async (id: string, formData: FormData) => {
-  const rawFormData = Object.fromEntries(formData.entries());
-  const { customerId, status, amount } = UpdateInvoice.parse(rawFormData);
+export const updateInvoice = async (
+  id: string,
+  prevState: FormState,
+  formData: FormData,
+) => {
+  const validatedFields = UpdateInvoice.safeParse({
+    customerId: formData.get('customerId'),
+    status: formData.get('status'),
+    amount: formData.get('amount'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing field. Failed to Update invoice',
+    };
+  }
+
+  const { customerId, status, amount } = validatedFields.data;
   const amountInCents = amount * 100;
 
   try {
