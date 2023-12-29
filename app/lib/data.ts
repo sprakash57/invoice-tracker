@@ -7,9 +7,12 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  FormattedCustomersTable,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+
+const ITEMS_PER_PAGE = 6;
 
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
@@ -83,7 +86,6 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -186,7 +188,12 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredCustomers(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const data = await sql<CustomersTableType>`
 		SELECT
@@ -204,6 +211,8 @@ export async function fetchFilteredCustomers(query: string) {
         customers.email ILIKE ${`%${query}%`}
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
+    LIMIT ${ITEMS_PER_PAGE}
+    OFFSET ${offset}
 	  `;
 
     const customers = data.rows.map((customer) => ({
@@ -212,10 +221,26 @@ export async function fetchFilteredCustomers(query: string) {
       total_paid: formatCurrency(customer.total_paid),
     }));
 
-    return customers;
+    return customers as FormattedCustomersTable[];
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function fetchCustomersPages(query: string) {
+  noStore();
+  try {
+    const data = await sql`
+      SELECT COUNT(*) FROM customers
+      WHERE
+        customers.name ILIKE ${`%${query}`} OR
+        customers.email ILIKE ${`%${query}`}
+    `;
+    return Math.ceil(Number(data.rows[0].count) / ITEMS_PER_PAGE);
+  } catch (error) {
+    console.error('DB Error:', error);
+    throw new Error('Failed to fetch total customers');
   }
 }
 
